@@ -1,0 +1,8 @@
+check:
+    global:
+        statements: 90
+        lines: 95
+        branches: 95
+        functions: 90
+reporting:
+    dir: ./.cov_temp

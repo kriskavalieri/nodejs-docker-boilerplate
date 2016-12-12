@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+import glob
+import json
+import os
+import sys
+import yaml
+from subprocess import check_output
+
+print("* Running pre-flight checks...")
+
+HOOKS_PATH = os.path.dirname(os.path.abspath(__file__))
+GIT_ROOT = os.path.join(HOOKS_PATH, "../..")
+LINT_OUT = os.path.join(GIT_ROOT, ".lint_out")
+COV_SUMMARY = os.path.join(GIT_ROOT, ".cov_temp/coverage-summary")
+COV_34_CONFIG = os.path.join(GIT_ROOT, ".istanbul-config.yml")
+
+test_dir = glob.glob(GIT_ROOT + "/test*")
+assert test_dir and os.path.isdir(test_dir[0]), \
+       "Package's test directory not found"
+
+_, TEST_DIR_NAME = os.path.split(test_dir[0])
+TEST_PATH = os.path.join(GIT_ROOT, TEST_DIR_NAME)
+assert os.path.isfile(os.path.join(TEST_PATH, "test.js")), \
+       "No test.js found in the test directory"
+os.chdir(GIT_ROOT)
+print("(might take a while longer in case of docker (re)building the image)")
+os.system("bash {}/run_checks_in_docker.sh &> /dev/null".format(GIT_ROOT))
+out = ""
+
+with open(COV_SUMMARY) as cov_summary, open(LINT_OUT) as lint, open(COV_34_CONFIG) as conv_34:
+    # on account of insignificantly low no of lines of .lint_out,
+    # let's just read the whole thing at once
+    if os.path.getsize(LINT_OUT):
+        # file not empty, errors/warnings present, interrupt and print
+        out += "\n* Lint returned some errors/warnings: \n{}\n\n".format(lint.read().strip())
+
+    covs_thresholds = yaml.load(conv_34)
+    thresholds = covs_thresholds['check']['global']
+    total_covs = cov_summary.read()
+    if total_covs:
+        out += "* Istanbul complained about too low coverage rates: \n{}".format(total_covs)
+if out:
+    print(out)
+    sys.exit(1)
+print("* All checked out good")
