@@ -1,0 +1,24 @@
+check:
+   global:
+      statements: 90
+      lines: 95
+      branches: 95
+      functions: 90
+reporting:
+   dir: ./.cov_temp
+instrumentation:
+   root: src
+   extensions:
+     - .js
+   default-excludes: true
+   excludes: ['.cov_temp/', '**/config/**', '**/dist/**', '**/translations/**', '**/coverage/**', '**/lib/**', '**/tools/**', '**/build/**', '**/node_modules/**']
+   embed-source: false
+   variable: __coverage__
+   compact: true
+   preserve-comments: false
+   complete-copy: false
+   save-baseline: false
+   baseline-file: ./coverage/coverage-baseline.json
+   include-all-sources: true
+   include-pid: false
+   es-modules: false

@@ -1,16 +1,26 @@
 #!/usr/bin/env python
+import atexit
 import glob
 import os
+import re
+import subprocess
 import sys
 import yaml
 
-print("* Running pre-flight checks...")
+cov_34_mode = ""
+stable_branch_re = re.compile(r'master|stable|prod|production')
+current_branch = subprocess.check_output(['git', 'branch']).split("\n", 1)[0].replace("* ", "")
+if not stable_branch_re.search(current_branch):
+    print("* On branch {} which is likely not production-bound, so executing low-threshold checks...".format(current_branch))
+    cov_34_mode = "_light"
+print("* Running pre-flight checks, hold...")
 
 HOOKS_PATH = os.path.dirname(os.path.abspath(__file__))
 GIT_ROOT = os.path.join(HOOKS_PATH, "../..")
 LINT_OUT = os.path.join(GIT_ROOT, ".lint_out")
 COV_SUMMARY = os.path.join(GIT_ROOT, ".cov_temp/coverage-summary")
-COV_34_CONFIG = os.path.join(GIT_ROOT, ".istanbul-config.yml")
+COV_34_CONFIG = os.path.join(GIT_ROOT, ".istanbul", ".istanbul-config.yml" + cov_34_mode)
+os.system("cp {} ../.istanbul-config.yml".format(COV_34_CONFIG))
 
 test_dir = glob.glob(GIT_ROOT + "/test*")
 assert test_dir and os.path.isdir(test_dir[0]), \
@@ -21,7 +31,6 @@ TEST_PATH = os.path.join(GIT_ROOT, TEST_DIR_NAME)
 assert os.path.isfile(os.path.join(TEST_PATH, "test.js")), \
        "No test.js found in the test directory"
 os.chdir(GIT_ROOT)
-print("(might take a while longer in case of docker (re)building the image)")
 os.system("bash {}/run_checks_in_docker.sh &> /dev/null".format(GIT_ROOT))
 out = ""
 
@@ -37,7 +46,13 @@ with open(COV_SUMMARY) as cov_summary, open(LINT_OUT) as lint, open(COV_34_CONFI
     total_covs = cov_summary.read()
     if total_covs:
         out += "* Istanbul complained about too low coverage rates: \n{}".format(total_covs)
+
 if out:
     print(out)
     sys.exit(1)
 print("* All checked out good")
+
+@atexit.register
+def restore_default_34_config():
+    os.system("cp {} ../.istanbul-config.yml".format(
+        COV_34_CONFIG.replace(cov_34_mode, "")))
