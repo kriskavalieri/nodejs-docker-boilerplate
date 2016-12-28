@@ -1,0 +1,52 @@
+{
+   "rules": {
+       "indent": ["error", 2],
+       "semi": [
+         "warn",
+         "always"
+       ],
+       "no-var"               : ["error"],
+       "prefer-arrow-callback": ["error"],
+       "no-sync"              : ["warn"],
+       "object-shorthand"     : ["warn", "always", {
+         "ignoreConstructors": true
+       }],
+       "no-lonely-if"   : ["error"],
+       "space-infix-ops": ["warn", {
+         "int32Hint": false
+       }],
+       "no-unneeded-ternary"  : ["warn"],
+       "no-nested-ternary"    : ["warn"],
+       "comma-dangle"         : [2, "always-multiline"],
+       "no-spaced-func"       : ["warn"],
+       "no-new-object"        : ["error"],
+       "no-array-constructor" : ["warn"],
+       "eqeqeq"               : ["error", "smart"],
+       "no-dupe-keys"         : ["error"],
+       "no-empty"             : ["warn"],
+       "valid-typeof"         : ["error"],
+       "no-extra-semi"        : ["warn"],
+       "no-dupe-args"         : ["error"],
+       "no-unreachable"       : ["warn"],
+       "no-sparse-arrays"     : ["error"],
+       "no-caller"            : ["error"],
+       "no-eval"              : ["error"],
+       "no-new-wrappers"      : ["error"],
+       "strict"               : ["error", "safe"],
+       "init-declarations"    : ["error", "always"],
+       "quotes"               : ["error", "single"],
+       "no-use-before-define" : ["error"],
+       "no-unused-vars"       : ["warn"],
+       "array-callback-return": ["error"],
+       "curly"                : ["error"],
+       "no-empty-function"    : ["error"],
+       "no-empty-pattern"     : ["error"],
+       "no-return-assign"     : ["error", "always"],
+       "no-warning-comments"  : ["warn"],
+       "handle-callback-err"  : ["warn"],
+       "no-self-assign"       : ["error"],
+       "no-self-compare"      : ["warn"],
+       "no-redeclare"         : ["warn"],
+       "no-loop-func"         : ["error"]
+     }
+}
