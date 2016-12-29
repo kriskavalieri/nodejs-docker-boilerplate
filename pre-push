@@ -11,9 +11,11 @@ cov_34_mode = ""
 stable_branch_re = re.compile(r'master|stable|prod|production')
 current_branch = subprocess.check_output(['git', 'branch']).split("\n", 1)[0].replace("* ", "")
 if not stable_branch_re.search(current_branch):
-    print("* On branch {} which is likely not production-bound, so executing low-threshold checks...".format(current_branch))
+    prefix = "* On branch {} which is likely not production-bound, so executing low-threshold checks...".format(current_branch)
     cov_34_mode = "_light"
-print("* Running pre-flight checks, hold...")
+else:
+    prefix = "* Push to production branch detected, executing full-scale checks..."
+print(prefix + "\n* Running pre-flight checks, hold...")
 
 HOOKS_PATH = os.path.dirname(os.path.abspath(__file__))
 GIT_ROOT = os.path.join(HOOKS_PATH, "../..")
