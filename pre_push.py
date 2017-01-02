@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import atexit
 import glob
+import json
 import os
 import re
 import subprocess
@@ -51,8 +52,11 @@ def run_checks(GIT_ROOT):
             out += "\n* Lint returned some errors/warnings: \n{}\n\n".format(lint.read().strip())
         total_covs = cov_summary.read()
         if total_covs:
-            out += "* Istanbul complained about too low coverage rates: \n{}".format(total_covs)
-
+            istanbul_rates = json.dumps(
+                re.findall(r'ERROR: (.*)', total_covs), indent=2)
+            out += "* Istanbul complained about too low coverage rates: \n{}".format(istanbul_rates)
+    separator = "\n{:#^70}\n".format(" Summary ")
+    print(separator)
     if out:
         print(out)
         sys.exit(1)
