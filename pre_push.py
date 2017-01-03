@@ -35,14 +35,15 @@ def set_mode_prefixes():
     print(prefix + "\n* Running pre-flight checks, please hold...")
     return cov_34_mode
 
-def run_checks(GIT_ROOT):
+def run_checks(GIT_ROOT, verbose=False):
     test_dir = glob.glob(GIT_ROOT + "/test*")
     assert test_dir and os.path.isdir(test_dir[0]), \
            "Package's test directory not found"
     COV_SUMMARY = os.path.join(GIT_ROOT, ".cov_temp/coverage-summary")
     LINT_OUT = os.path.join(GIT_ROOT, ".lint_out")
     os.chdir(GIT_ROOT)
-    os.system("bash {}/run_checks_in_docker.sh".format(GIT_ROOT))
+    args = " -v" if verbose else ""
+    os.system("bash {}/run_checks_in_docker.sh {}".format(GIT_ROOT, args))
     out = ""
     with open(COV_SUMMARY) as cov_summary, open(LINT_OUT) as lint:
         # on account of insignificantly low no of lines of .lint_out,
