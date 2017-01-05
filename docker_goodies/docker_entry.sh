@@ -11,7 +11,7 @@ cat /dev/null | tee .lint_out .test_out .test_err
 
 echo -e "\t${INFO}+ Running tests...${EC}"
 npm run test 2> .test_err 1> .test_out
-[[ "$?" -gt 0 ]] && cat /dev/null > .test_err
+[[ "$?" -le 0 ]] && cat /dev/null > .test_err
 
 # echo -e "\t${INFO}+ Running coverage checks...${EC}"
 # rm -rf .cov_temp
