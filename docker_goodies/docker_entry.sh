@@ -27,7 +27,7 @@ npm run test 2> .test_err 1> .test_out
 
 if [ -e .eslintrc ]; then
    echo -e "\t${INFO}+ Running lint checks...${EC}"
-   $NODE_MODULES_PATH/eslint/bin/eslint.js -f compact -o .lint_out
+   $NODE_MODULES_PATH/eslint/bin/eslint.js src tests -f compact -o .lint_out
 else
    echo -e "\t${WARN}+ Lint checks skipped, no .eslintrc present.${EC}"
 fi
